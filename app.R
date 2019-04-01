@@ -10,13 +10,12 @@ ui <- fluidPage(
       conditionalPanel(
         # use a server side condition
         condition = "output.fileUploaded",
-        # placeholders will be replaced from the server
-        selectInput("country_input", "Select a cunttry", "placeholder 1")
-        #selectInput("level", "select level", "placeholder 2")
+        # placeholders("Country") will be replaced from the server
+        selectInput("country_input", "Select a cunttry", "Country")
       )
     ),
     mainPanel(
-      h3("Field Guides by Country"),
+      h1 textOutput("title"),
       plotOutput("PieChart"),
       tableOutput("summary_table"),
       tableOutput("table")
@@ -46,13 +45,18 @@ server <- function(input, output, session){
   
   ## update 'country_input' selector
   observeEvent(filedata(), {
-    updateSelectInput(session, "country_input", choices = unique(filedata()$country))
+    updateSelectInput(session, "country_input", choices = unique(filedata()$Countries))
+  })
+  
+  #add a reactive title
+  output$title <- renderText({ 
+    paste("Field Guides by ", input$country_input)
   })
   
   #show a pie chart 
   output$PieChart<-renderPlot({
-    filedata() %>%subset( filedata()$country == input$country_input) %>%
-      select(country, Category) %>%
+    filedata() %>%subset( filedata()$Countries == input$country_input) %>%
+      select(Countries, Category) %>%
       group_by(Category) %>%
       summarise(count=n()) %>%
       mutate(Proportion = count/sum(count))%>%
@@ -61,8 +65,8 @@ server <- function(input, output, session){
   
   # show summary table (percentge)
   output$summary_table <- renderTable({
-    filedata() %>%subset( filedata()$country == input$country_input) %>%
-      select(country, Category) %>%
+    filedata() %>%subset( filedata()$Countries == input$country_input) %>%
+      select(Countries, Category) %>%
       group_by(Category) %>%
       summarise(count=n()) %>%
       mutate(Proportion = count/sum(count))
@@ -71,7 +75,7 @@ server <- function(input, output, session){
 
   # show table
   output$table <- renderTable({
-    filedata() %>%subset( filedata()$country == input$country_input)
+    filedata() %>%subset( filedata()$Countries == input$country_input)
   }, bordered = TRUE)
 }
  

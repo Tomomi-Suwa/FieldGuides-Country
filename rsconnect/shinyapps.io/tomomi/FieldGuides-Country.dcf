@@ -1,0 +1,13 @@
+name: FieldGuides-Country
+title: FieldGuides-Country
+username:
+account: tomomi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 830002
+bundleId: 1979401
+url: https://tomomi.shinyapps.io/FieldGuides-Country/
+when: 1554140532.74216
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: ._FG_cleaned_3.12.2019.csv|FG_cleaned_3.12.2019.csv|FieldGuide_DataCleaning.R|guides-export-default.csv|mtcars.csv|tips.csv
