@@ -1,5 +1,7 @@
 library(shiny)
-
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
@@ -61,19 +63,28 @@ server <- function(input, output, session){
   })
   
   #show a pie chart 
-  # output$PieChart<-renderPlot({
-  #   dataInput() %>% 
-  #     ggplot(aes(x="", y=Percent, fill=Category))+geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)
-  # },bordered = TRUE)
+  output$PieChart<-renderPlot({
+    filedata() %>%subset( filedata()$country == input$country_input) %>%
+      select(country, Category) %>%
+      group_by(Category) %>%
+      summarise(count=n()) %>%
+      mutate(Percent = count/sum(count))%>%
+      ggplot(aes(x="", y=Percent, fill=Category))+geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)
+  })
   
   # show summary table (percentge)
-#   output$summary_table <- renderTable({
-#     filedata()%>% subset( filedata()$country == input$country_input)
-#   }, bordered = TRUE)
-# }
+  output$summary_table <- renderTable({
+    filedata() %>%subset( filedata()$country == input$country_input) %>%
+      select(country, Category) %>%
+      group_by(Category) %>%
+      summarise(count=n()) %>%
+      mutate(Percent = count/sum(count))
+  }, bordered = TRUE)
+
+
   # show table
   output$table <- renderTable({
-    subset(filedata(), filedata()$country == input$country_input)
+    filedata() %>%subset( filedata()$country == input$country_input)
   }, bordered = TRUE)
 }
  
