@@ -27,6 +27,7 @@ ui <- fluidPage(
 server <- function(input, output, session){
   # create reactive version of the dataset (a data.frame object)
   filedata <- reactive({
+    req(input$datafile)
     infile <- input$datafile
     if (is.null(infile))
       # User has not uploaded a file yet. Use NULL to prevent observeEvent from triggering
@@ -35,20 +36,6 @@ server <- function(input, output, session){
     temp[order(temp[, 1]),]
   })
   
-  # dataInput<-reactive({
-  #   dataInput2<- filedata() %>%
-  #     filter(country %in% input$country_input) %>%
-  #     select(country, Category) %>%
-  #     group_by(Category) %>%
-  #     summarise(count=n()) %>%
-  #     mutate(Percent = count/sum(count)) %>%
-  #     as.data.frame()
-  #   if (is.null(filedata))
-  #     # User has not uploaded a file yet. Use NULL to prevent observeEvent from triggering
-  #     return(NULL)
-  # })
-  #print(dataInput())
-
   # inform conditionalPanel wheter dropdowns sohould be hidden
   output$fileUploaded <- reactive({
     return(!is.null(filedata()))
@@ -68,8 +55,8 @@ server <- function(input, output, session){
       select(country, Category) %>%
       group_by(Category) %>%
       summarise(count=n()) %>%
-      mutate(Percent = count/sum(count))%>%
-      ggplot(aes(x="", y=Percent, fill=Category))+geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)
+      mutate(Proportion = count/sum(count))%>%
+      ggplot(aes(x="", y=Proportion, fill=Category))+geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)
   })
   
   # show summary table (percentge)
@@ -78,7 +65,7 @@ server <- function(input, output, session){
       select(country, Category) %>%
       group_by(Category) %>%
       summarise(count=n()) %>%
-      mutate(Percent = count/sum(count))
+      mutate(Proportion = count/sum(count))
   }, bordered = TRUE)
 
 
