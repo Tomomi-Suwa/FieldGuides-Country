@@ -64,6 +64,7 @@ server <- function(input, output, session){
       filedata() %>%subset(filedata()$Countries == input$country_input)%>%
             distinct(guide_no)%>%
             nrow()
+      )
     })  
   #show a pie chart 
   output$PieChart<-renderPlot({
