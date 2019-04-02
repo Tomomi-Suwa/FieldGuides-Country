@@ -21,6 +21,7 @@ ui <- fluidPage(
       #add total number of field guides
       h3(textOutput("total")),
       plotOutput("PieChart"),
+      h3("Summary by Category"),
       tableOutput("summary_table"),
       tableOutput("table")
     )
@@ -57,9 +58,12 @@ server <- function(input, output, session){
     paste("Summary of Field Guides in", input$country_input)
   })
 
-  #add total number of field guides
+  #add total number of UNIQUE field guides
     output$total <- renderText({ 
-      paste("Total Number: ", nrow(filter(filedata(),Countries== input$country_input)))
+      paste("Total Number: ",
+      filedata() %>%subset(filedata()$Countries == input$country_input)%>%
+            distinct(guide_no)%>%
+            nrow()
     })  
   #show a pie chart 
   output$PieChart<-renderPlot({
@@ -86,9 +90,20 @@ server <- function(input, output, session){
 
   # show table
   output$table <- renderTable({
-    filedata() %>%subset( filedata()$Countries == input$country_input)
+    filedata() %>%subset( filedata()$Countries == input$country_input)%>%
+      select(-category,-country)#removed these columns because we now have new columns Countries and Category
   }, bordered = TRUE)
 }
  
 
 shinyApp(ui, server)
+
+#To count the number of rows for a given selected country
+#output$total <- renderText({ 
+#paste("Total Number: ", nrow(filter(filedata(),Countries== input$country_input)))
+#})  
+
+fg5%>% subset(Countries == "Guyana")%>%
+  distinct(guide_no)%>%
+  nrow()
+     
