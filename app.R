@@ -18,6 +18,8 @@ ui <- fluidPage(
     ),
     mainPanel(
       h2(textOutput("title")),
+      #add total number of field guides
+      h3(textOutput("total")),
       plotOutput("PieChart"),
       tableOutput("summary_table"),
       tableOutput("table")
@@ -52,19 +54,24 @@ server <- function(input, output, session){
   
   #add a reactive title
   output$title <- renderText({ 
-    paste("Field Guides in", input$country_input)
+    paste("Summary of Field Guides in", input$country_input)
   })
-  
+
+  #add total number of field guides
+    output$total <- renderText({ 
+      paste("Total Number: ", nrow(filter(filedata(),Countries== input$country_input)))
+    })  
   #show a pie chart 
   output$PieChart<-renderPlot({
     filedata() %>%subset( filedata()$Countries == input$country_input) %>%
       select(Countries, Category) %>%
+      #mutate_at(var(Countries,Category), factor)%>%
       group_by(Category) %>%
       summarise(count=n()) %>%
       mutate(Proportion = count/sum(count))%>%
-      #as.factor(Category)
-      ggplot(aes(x="", y=Proportion, fill=Category))+ geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)%>%
-      scale_fill_manual(values = c("Plants" ="green", "Birds" = "purple", "Fishes"="blue", "Herp" = "brown", "Insects" = "yellow","Mammals" = "orange", "Other" = "pink"))
+      ggplot(aes(x="", y=Proportion, fill=Category))+ geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)+
+      scale_fill_manual(values = c("Plants" ="seagreen2", "Birds" = "mediumpurple3", "Fishes"="deepskyblue3", "Herp" = "cyan3",
+                                   "Insects" = "goldenrod2","Mammals" = "darkorange2", "Other" = "palevioletred2"))#manually selecint colors
   })
   
   # show summary table (pefrcentge)
