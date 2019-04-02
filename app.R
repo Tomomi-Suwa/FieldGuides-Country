@@ -2,7 +2,9 @@ library(shiny)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+
 ui <- fluidPage(
+  
   sidebarLayout(
     sidebarPanel(
       fileInput('datafile', 'Choose CSV file',
@@ -11,11 +13,11 @@ ui <- fluidPage(
         # use a server side condition
         condition = "output.fileUploaded",
         # placeholders("Country") will be replaced from the server
-        selectInput("country_input", "Select a cunttry", "Country")
+        selectInput("country_input", "Select a country", "a Selected Country")
       )
     ),
     mainPanel(
-      h1 textOutput("title"),
+      h2(textOutput("title")),
       plotOutput("PieChart"),
       tableOutput("summary_table"),
       tableOutput("table")
@@ -45,12 +47,12 @@ server <- function(input, output, session){
   
   ## update 'country_input' selector
   observeEvent(filedata(), {
-    updateSelectInput(session, "country_input", choices = unique(filedata()$Countries))
+    updateSelectInput(session, "country_input", choices = sort(unique(filedata()$Countries)))
   })
   
   #add a reactive title
   output$title <- renderText({ 
-    paste("Field Guides by ", input$country_input)
+    paste("Field Guides in", input$country_input)
   })
   
   #show a pie chart 
@@ -60,10 +62,12 @@ server <- function(input, output, session){
       group_by(Category) %>%
       summarise(count=n()) %>%
       mutate(Proportion = count/sum(count))%>%
-      ggplot(aes(x="", y=Proportion, fill=Category))+geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)
+      #as.factor(Category)
+      ggplot(aes(x="", y=Proportion, fill=Category))+ geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)%>%
+      scale_fill_manual(values = c("Plants" ="green", "Birds" = "purple", "Fishes"="blue", "Herp" = "brown", "Insects" = "yellow","Mammals" = "orange", "Other" = "pink"))
   })
   
-  # show summary table (percentge)
+  # show summary table (pefrcentge)
   output$summary_table <- renderTable({
     filedata() %>%subset( filedata()$Countries == input$country_input) %>%
       select(Countries, Category) %>%
