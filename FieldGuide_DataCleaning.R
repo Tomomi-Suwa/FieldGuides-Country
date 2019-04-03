@@ -13,16 +13,17 @@ names(fg)<-c("guide_title", "guide_no", "page_no", "country", "state","category"
 ########################################
 
 #plants - if "category" contains a word "plants", then stamp with "plants" in the new category 
-fg2<-fg%>%mutate(plant_cat = ifelse(grepl("Plants", category), "Plants", "")) %>%
+fg2<-fg%>%mutate(plant_cat = ifelse(grepl("Plants|plants|Algae", category), "Plants", "")) %>%
   mutate(bird_cat = ifelse(grepl("Birds", category), "Birds", ""))%>%
   mutate(mammal_cat = ifelse(grepl("Mammals", category), "Mammals", ""))%>%      
   mutate(insect_cat = ifelse(grepl("Insects", category), "Insects", ""))%>%
   mutate(fish_cat = ifelse(grepl("Fishes", category), "Fishes", ""))%>%
+  mutate(fungi_cat = ifelse(grepl("Mushrooms|Fungi", category), "Fungi", ""))%>%
   mutate(herp_cat = ifelse(grepl("Amphibians|Reptiles", category), "Herp",
-                          ifelse(grepl("Plants|Birds|Mammals|Insects|Fishes|Amphibians|Reptiles", category),"", "Other")))
+                          ifelse(grepl("Plants|plants|Algae|Birds|Mammals|Insects|Fishes|Amphibians|Reptiles|Mushrooms|Fungi", category),"", "Other")))
   
 #gather category columns
-fg3<-fg2 %>% gather(key = "category_type", value="Category",plant_cat, bird_cat, mammal_cat, insect_cat, fish_cat, herp_cat)%>%
+fg3<-fg2 %>% gather(key = "category_type", value="Category",plant_cat, bird_cat, mammal_cat, insect_cat, fish_cat, herp_cat, fungi_cat)%>%
    filter(Category!="")#delete when "Category" is blank
 nrow(fg3)#N = 1027  
 nrow(fg)#N = 1000     
@@ -57,7 +58,7 @@ fg4<-fg3%>%mutate(Brazil_country = ifelse(grepl("Brazil", country), "Brazil", ""
   mutate(Puerto_country = ifelse(grepl("Puerto Rico", country), "Puerto Rico", ""))%>%
   mutate(Panama_country = ifelse(grepl("Panama", country), "Panama", ""))%>%
   mutate(Costa_country = ifelse(grepl("Costa Rica", country), "Costa Rica", ""))%>%
-  mutate(Mexico_country = ifelse(grepl("Mexic", country), "Mexic", ""))%>%
+  mutate(Mexico_country = ifelse(grepl("Mexico", country), "Mexico", ""))%>%
   mutate(Madagascar_country = ifelse(grepl("Madagascar", country), "Madagascar", ""))%>%
   mutate(Paraguay_country = ifelse(grepl("Paraguay", country), "Paraguay", ""))%>%
   mutate(Thailand_country = ifelse(grepl("Thailand", country), "Thailand", ""))%>%
