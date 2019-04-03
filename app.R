@@ -17,7 +17,7 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      h2(textOutput("title")),
+      h3(textOutput("title")),
       #add total number of field guides
       h3(textOutput("total")),
       plotOutput("PieChart"),
@@ -75,10 +75,11 @@ server <- function(input, output, session){
       summarise(count=n()) %>%
       mutate(Proportion = count/sum(count))%>%
       ggplot(aes(x="", y=Proportion, fill=Category))+ geom_bar(width = 1, stat = "identity")+ coord_polar("y", start=0)+
-      scale_fill_manual(values = c("Plants" ="seagreen2", "Birds" = "mediumpurple3", "Fishes"="deepskyblue3", "Herp" = "cyan3",
-                                   "Insects" = "goldenrod2","Mammals" = "darkorange2", "Other" = "palevioletred2"))#manually selecint colors
-  })
-  
+      scale_fill_manual(values = c("Plants" ="seagreen2", "Birds" = "mediumpurple3", "Fishes"="deepskyblue3", 
+                                   "Herp" = "cyan3", "Insects" = "goldenrod2","Mammals" = "darkorange2",
+                                   "Fungi"= "lightgoldenrod4", "Other" = "palevioletred2")) +
+      theme_bw() + theme(legend.text=element_text(size=rel(1.2))) +theme(legend.title=element_text(size=15))
+     }) 
   # show summary table (pefrcentge)
   output$summary_table <- renderTable({
     filedata() %>%subset( filedata()$Countries == input$country_input) %>%
@@ -104,7 +105,5 @@ shinyApp(ui, server)
 #paste("Total Number: ", nrow(filter(filedata(),Countries== input$country_input)))
 #})  
 
-fg5%>% subset(Countries == "Guyana")%>%
-  distinct(guide_no)%>%
-  nrow()
+
      
