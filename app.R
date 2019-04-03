@@ -100,10 +100,6 @@ server <- function(input, output, session){
 
 shinyApp(ui, server)
 
-#To count the number of rows for a given selected country
-#output$total <- renderText({ 
-#paste("Total Number: ", nrow(filter(filedata(),Countries== input$country_input)))
-#})  
 
 
      
