@@ -11,17 +11,17 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-        # add select
+      # add select
       selectInput("country", "Select a Country", choices =sort(unique(filedata$Countries))
-      )
+      ),
+      br(),
+      h4(textOutput("total")),
+      h4("Summary by Category"),
+      tableOutput("summary_table")
     ),
     mainPanel(
       h3(textOutput("title")),
       plotOutput("PieChart"),
-      #add total number of field guides
-      h3(textOutput("total")),
-      h3("Summary by Category"),
-      tableOutput("summary_table"),
       DT::dataTableOutput("table")
     )
   )
@@ -44,8 +44,8 @@ server <- function(input, output, session){
     paste("Total Number: ",
           datasetInput() %>%subset(Countries == input$country)%>%
             distinct(guide_no)%>%
-           nrow()
-          )
+            nrow()
+    )
   })  
   #show a pie chart 
   output$PieChart<-renderPlot({
@@ -70,10 +70,10 @@ server <- function(input, output, session){
       mutate(Proportion = count/sum(count))
   }, bordered = TRUE)
   
-#show table
-#to make active hyperlinks: https://stackoverflow.com/questions/30901027/convert-a-column-of-text-urls-into-active-hyperlinks-in-shiny
+  #show table
+  #to make active hyperlinks: https://stackoverflow.com/questions/30901027/convert-a-column-of-text-urls-into-active-hyperlinks-in-shiny
   output$table <- DT::renderDataTable({
-      datasetInput() %>%
+    datasetInput() %>%
       dplyr::select(-category,-country,-state, -language, -date_created) %>%
       dplyr::mutate(URL = paste0("https://fieldguides.fieldmuseum.org/guides/guide/", guide_no)) %>%
       dplyr::mutate(URL = paste0("<a href='", URL, "'>",URL,"</a>"))
@@ -81,6 +81,3 @@ server <- function(input, output, session){
 }
 
 shinyApp(ui, server) 
-
-
-
