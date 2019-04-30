@@ -1,0 +1,13 @@
+name: FieldGuides-URL
+title: FieldGuides-URL
+username:
+account: tomomi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 900178
+bundleId: 2049640
+url: https://tomomi.shinyapps.io/FieldGuides-URL/
+when: 1556630550.87577
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: ._app.R|._FG_Category_Counry_cleaned_3.12.2019.csv|._FG_cleaned_3.12.2019.csv|._guides-export-default.csv|app.R|FG_Category_Counry_cleaned_3.12.2019.csv|FG_cleaned_3.12.2019.csv|FieldGuide_DataCleaning.R|FieldGuides-Country.R|guides-export-default.csv|mtcars.csv|tips.csv
