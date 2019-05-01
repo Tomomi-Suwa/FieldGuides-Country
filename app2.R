@@ -22,6 +22,7 @@ ui <- fluidPage(
     mainPanel(
       h3(textOutput("title")),
       plotOutput("PieChart"),
+      h4("Summary Table"),
       DT::dataTableOutput("table")
     )
   )
@@ -76,7 +77,9 @@ server <- function(input, output, session){
     datasetInput() %>%
       dplyr::select(-category,-country,-state, -language, -date_created) %>%
       dplyr::mutate(URL = paste0("https://fieldguides.fieldmuseum.org/guides/guide/", guide_no)) %>%
-      dplyr::mutate(URL = paste0("<a href='", URL, "'>",URL,"</a>"))
+      dplyr::mutate(title = paste0("<a href='", URL, "'>",guide_title,"</a>")) %>% 
+      dplyr::select(title, guide_no, page_no,Category) %>% 
+      dplyr :: rename(Title = title, Guide_No = guide_no,Page_Number = page_no)
   }, escape = FALSE)
 }
 
